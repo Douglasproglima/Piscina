@@ -1,0 +1,31 @@
+<html>
+<head>
+<link rel="stylesheet" type="text/css" href="css/mdp.css">
+<link rel="stylesheet" type="text/css" href="css/prettify.css">
+<script type="text/javascript" src="js/prettify.js"></script>
+<script type="text/javascript" src="js/lang-css.js"></script>
+<!-- includes jquery, jquery ui and multidatespicker scripts -->
+<script type="text/javascript" src="js/jquery-1.11.1.js"></script>
+<script type="text/javascript" src="js/jquery-ui-1.11.1.js"></script>  
+<script type="text/javascript" src="jquery-ui.multidatespicker.js"></script>
+<script>
+$(function() {
+    $('#simpliest-usage').multiDatesPicker(); 
+
+	$('#show_dates').click(function(e) {
+		  e.preventDefault();
+		  var dates = $('#simpliest-usage').multiDatesPicker('getDates');
+		  var dates_in_string = '';
+		  for(d in dates) dates_in_string+= dates[d]+' ';
+		  alert(dates_in_string);
+		});
+	
+  });
+
+</script>
+</head>
+<body>
+  <div id="simpliest-usage" class="box"></div>
+  <button id="show_dates">Show selected dates!</button>
+</body>
+</html>

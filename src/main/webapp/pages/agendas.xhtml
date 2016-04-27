@@ -9,52 +9,22 @@
 
 	<ui:define name="uiConteudo">
 		<h:form id="formulario">
-				<p:panel id="idPanelAgenda" header="Controle de Manutenção" style="margin-bottom:0px; margin-top:1px;">
-					
-					<p:panelGrid id="panelCadastro" width="100%" rules="groups" align="center" columns="4" style="margin-top:2px; height:45px; text-align:left;">
-	
-						<p:column style="margin-top:2px;">
-							<p:outputLabel for="idCliente" value="Cliente (CGE): " />
-							<p:selectOneMenu id="idCliente" filter="true" size="200"
-											 value="#{clienteBean.cliente.cge}"
-											 converter="omnifaces.SelectItemsConverter" required="true"
-											 requiredMessage="O campo Cliente é obrigatório.">
-		
-								<f:selectItem noSelectionOption="true" itemLabel="Selecione um cliente" />
-								<f:selectItems value="#{clienteBean.cges}" var="clienteListagem"
-											   itemValue="#{clienteListagem}"
-											   itemLabel="#{agendaListagem.nome})" />
-							</p:selectOneMenu>
-						</p:column>								
-							
-						<p:column style="margin-top:2px;">
-							<p:outputLabel for="idFieldValor" value="Valor: " />
-							<p:inputText id="idFieldValor" value="#{agendaBean.agenda.valor}" maxlength="7" size="10" 
-										 required="true" requiredMessage="O campo 'Valor' é obrigatório."
-										 converterMessage="Informe um valor válido para o campo 'Valor'."
-										 validatorMessage="Informe um valor entre 0.01 e 9999 no campo 'Valor'.">
-							
-								<f:convertNumber minFractionDigits="2" />
-								<f:validateDoubleRange minimum="0.01" maximum="9999"/>
-							</p:inputText>						
-						</p:column>	
-	
-						<p:column>
-							<p:calendar id="idData" mode="inline" selection="multiple"
-									    value="#{agendaBean.agenda.data}" 
-										required="true" requiredMessage="O campo Data é obrigatório."
-										locale="pt_BR" pattern="dd/mm/yyyy" />						
-								
-						</p:column>
-						
-						<p:column>
-							<p:outputLabel for="idData02" value="MultDatePicker: " />
-							<p:inputText id="idData02" />
-						</p:column>
-	
-					</p:panelGrid>
-					
-				</p:panel>
+			<h:inputHidden id="idData" value="#{agendaBean.data}" />
+			<p:panel id="idPanelAgenda" header="Controle de Manutenção" style="margin-bottom:0px; margin-top:1px;">
+				
+				<p:panelGrid id="panelCadastro" width="100%" rules="groups" align="center" columns="4" style="margin-top:2px; height:45px; text-align:left;">
+
+					<p:column>
+ 							<div id="idData02" class="box"></div>
+					</p:column>
+
+				</p:panelGrid>
+				
+				<p:panelGrid columns="2">
+					<p:commandButton value="Salvar" onclick="getDatasSelecionadas()" action="#{agendaBean.submit()}" />
+				</p:panelGrid>
+				
+			</p:panel>
 
 			<div class="dataTable">
 				<p:dataTable id="tabelaItensAgendamentos" var="cursorManutencoesRealizadas" lazy="true"

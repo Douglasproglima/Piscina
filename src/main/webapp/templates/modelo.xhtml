@@ -4,30 +4,46 @@
 	xmlns:h="http://xmlns.jcp.org/jsf/html"
 	xmlns:f="http://xmlns.jcp.org/jsf/core"
 	xmlns:p="http://primefaces.org/ui"
-	xmlns:ui="http://xmlns.jcp.org/jsf/facelets" >
-	
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+
 <h:head>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 	<title>SGP - Sistema Gerenciamento de Piscinas</title>
 	<h:outputStylesheet library="css" name="estilos.css" />
-	<h:outputScript library="js" name="script.js"/>
+
 	
-<!-- 	<script type="resources/js" src="multidatespicker.js"> -->
-	<h:outputScript library="js" name="multidatespicker.js"/>	
+	<h:outputScript library="js" name="jquery-ui.multidatespicker.js" />
+	<h:outputScript library="js" name="prettify.js" />
+	<h:outputScript library="js" name="lang-css.js" />
+
+	<h:outputScript library="js" name="jquery-ui.multidatespicker.js" />
+
+	<h:outputStylesheet library="css" name="mdp.css" />
+	<h:outputStylesheet library="css" name="prettify.css" />
+
 	<script>		
-		$('#idData2').multiDatesPicker({
-			altField: '#idData2'
-		});
+		$(function() {
+		    $('#idData02').multiDatesPicker({dateFormat: "yy-mm-dd"});    
+
+	    });
+		
+		function getDatasSelecionadas() {
+	        var dates = $('#idData02').multiDatesPicker('getDates');
+	        var dates_in_string = '';
+	        for(d in dates) dates_in_string+=dates[d]+';';
+
+	        document.getElementById("formulario:idData").value = dates_in_string;
+		}
 	</script>
 
-<!-- Barra \ -->
+	<!-- Barra \ -->
 </h:head>
 <h:body>
 
-	
+
 	<p:growl id="mensagem" />
-	
-		<!--Estrutura do template padrão 
+
+	<!--Estrutura do template padrão 
 		1 - Área para logo
 		2 - Abaixo do logo o menu horizontal
 		3 - Conteúdo
@@ -36,59 +52,60 @@
 		styleClass é das tags do JSF e do PrimeFaces, amabas fazem a mesma coisa
 	 	-->
 
-		<!-- Div geral para definir altura/largura da aplicação -->
-		<div id="divGeral">
+	<!-- Div geral para definir altura/largura da aplicação -->
+	<div id="divGeral">
 
-			<!-- Topo -> LogoTipo \ -->
-			<div id="idTopo" class="divTopo">
-				<p:graphicImage library="imagens" name="cabecalho/12.jpg"
-							 	styleClass="imagemCentralizada" 
-							 	style="text-align:center; display:block;" />
-			</div>
-
-			<!-- Cabeçalho - Todas as páginas irão ter o mesmo menu-->
-			<div id="idCabecalho" class="divCabecalho">
-				<h:form id="formMenu">
-					<p:menubar>
-						<p:submenu label="Arquivos">
-							<p:menuitem value="Cadastro de Empresa" url="empresas.xhtml"/>
-							<p:menuitem value="Cadastro de Usuários" url="usuarios.xhtml"/>
-							<p:menuitem value="Sair" />
-						</p:submenu>
-		
-						<p:submenu label="Cadastros">
-							<p:menuitem value="CGE - Cadastro Geral de Entidade" url="cges.xhtml"/>
-							<p:menuitem value="Cliente" url="clientes.xhtml"/>
-						</p:submenu>
-		
-						<p:submenu label="Procedimentos">
-							<p:menuitem value="Agenda" url="agendas.xhtml"/>
-						</p:submenu>
-		
-						<p:submenu label="Relatórios">
-							<p:menuitem value="Clientes" />
-							<p:menuitem value="Agenda" />
-						</p:submenu>
-		
-						<p:submenu label="Ajuda">
-							<p:menuitem value="Sobre" />
-						</p:submenu>
-					</p:menubar>
-				</h:form>
-			</div>
-
-			<!-- Conteúdo -->
-			<div id="idConteudo">
-				<ui:insert name="uiConteudo" />
-			</div>
-
-			<!-- Rodapé -->
-<!-- 			<div id="idRodape" class="divRodape"> -->
-<!-- 				<p:graphicImage library="imagens" name="rodape/rodape.jpg" -->
-<!-- 								style="text-align:center; display:block;" -->
-<!-- 								styleClass="imagemRodape"/> -->
-<!-- 			</div> -->
+		<!-- Topo -> LogoTipo \ -->
+		<div id="idTopo" class="divTopo">
+			<p:graphicImage library="imagens" name="cabecalho/12.jpg"
+				styleClass="imagemCentralizada"
+				style="text-align:center; display:block;" />
 		</div>
-	
+
+		<!-- Cabeçalho - Todas as páginas irão ter o mesmo menu-->
+		<div id="idCabecalho" class="divCabecalho">
+			<h:form id="formMenu">
+				<p:menubar>
+					<p:submenu label="Arquivos">
+						<p:menuitem value="Cadastro de Empresa" url="empresas.xhtml" />
+						<p:menuitem value="Cadastro de Usuários" url="usuarios.xhtml" />
+						<p:menuitem value="Sair" />
+					</p:submenu>
+
+					<p:submenu label="Cadastros">
+						<p:menuitem value="CGE - Cadastro Geral de Entidade"
+							url="cges.xhtml" />
+						<p:menuitem value="Cliente" url="clientes.xhtml" />
+					</p:submenu>
+
+					<p:submenu label="Procedimentos">
+						<p:menuitem value="Agenda" url="agendas.xhtml" />
+					</p:submenu>
+
+					<p:submenu label="Relatórios">
+						<p:menuitem value="Clientes" />
+						<p:menuitem value="Agenda" />
+					</p:submenu>
+
+					<p:submenu label="Ajuda">
+						<p:menuitem value="Sobre" />
+					</p:submenu>
+				</p:menubar>
+			</h:form>
+		</div>
+
+		<!-- Conteúdo -->
+		<div id="idConteudo">
+			<ui:insert name="uiConteudo" />
+		</div>
+
+		<!-- Rodapé -->
+		<!-- 			<div id="idRodape" class="divRodape"> -->
+		<!-- 				<p:graphicImage library="imagens" name="rodape/rodape.jpg" -->
+		<!-- 								style="text-align:center; display:block;" -->
+		<!-- 								styleClass="imagemRodape"/> -->
+		<!-- 			</div> -->
+	</div>
+
 </h:body>
 </html>

@@ -24,6 +24,7 @@ public class AgendaBean implements Serializable{
 	private Agenda agenda;
 	private List<AgendaXDias> agendasXDias;
 	private List<Cliente> clientes;
+	private String data;
 	
 	public Agenda getAgenda() {
 		return agenda;
@@ -47,6 +48,14 @@ public class AgendaBean implements Serializable{
 		this.clientes = clientes;
 	}
 	
+	public String getData() {
+		return data;
+	}
+	
+	public void setData(String data) {
+		this.data = data;
+	}
+	
 	public void novo(){
 		try {
 			agenda = new Agenda();
@@ -62,32 +71,7 @@ public class AgendaBean implements Serializable{
 			erro.printStackTrace();
 		}
 	}
-	
-//	public void adicionar(ActionEvent evento){
-//		Agenda agenda = (Agenda) evento.getComponent().getAttributes().get("agendaSelecionada");
-//		
-//		int status = -1;
-//		
-//		for (int posicao = 0; posicao < agendasXDias.size(); posicao++) {
-//			if (agendasXDias.get(posicao).getAgenda().equals(agenda)) {
-//				status = posicao;
-//			}
-//		}
-//		
-//		if (status < 0) {
-//			AgendaXDias agendaXDias = new AgendaXDias();
-//			//Passar os parâmetros da Agenda para AgendaXDias
-//			/*
-//			 agendaXDias.setAgenda(agenda);
-//			 agendaXDias.setDiaSemana(diaSemana);
-//			 agendaXDias.setDia(dia);
-//			 agendaXDias.setMes(mes);
-//			 agendaXDias.setAno(ano); 
-//			 */
-//			
-//			agendasXDias.add(agendaXDias);
-//		}
-//	}
+
 	
 	public void remover(ActionEvent evento){
 		AgendaXDias agendaXDias = (AgendaXDias) evento.getComponent().getAttributes().get("itemAgendaXDiasSelecionado");
@@ -127,5 +111,11 @@ public class AgendaBean implements Serializable{
 			Messages.addGlobalError("Erro ao salvar agendamento, erro: " + erro);
 			erro.printStackTrace();
 		}
+	}
+	
+	public void submit(){
+		String words[] = this.data.split(";");
+		@SuppressWarnings("unused")
+		String data02 = this.data;
 	}
 }
