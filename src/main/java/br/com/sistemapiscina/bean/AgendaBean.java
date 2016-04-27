@@ -114,8 +114,16 @@ public class AgendaBean implements Serializable{
 	}
 	
 	public void submit(){
-		String words[] = this.data.split(";");
+		String listaDatas[] = this.data.split(";");
 		@SuppressWarnings("unused")
 		String data02 = this.data;
+		
+		String data03 = "";
+		for (String datas : listaDatas) {
+			data03 = datas;
+			
+//			AgendaDAO agendaDAO = new AgendaDAO();
+//			agendaDAO.salvar(agenda);
+		}
 	}
 }

@@ -18,15 +18,48 @@
  							<div id="idData02" class="box"></div>
 					</p:column>
 				</p:panelGrid>
+
+				<p:panelGrid id="panelCampos" >
+
+
+				</p:panelGrid>
+				
+				<p:panelGrid columns="1" style="margin-top:5px; width:100%; height:100px; text-align:left;">
+					<p:column style="margin-top:2px;">
+						<p:outputLabel for="idCliente" value="Cliente (CGE): " />
+						<p:selectOneMenu id="idCliente" filter="true" size="200"
+										 value="#{agendaBean.agenda.cliente}"
+										 converter="omnifaces.SelectItemsConverter" required="true"
+										 requiredMessage="O campo Cliente é obrigatório." >
+	
+							<f:selectItem noSelectionOption="true" itemLabel="Selecione um cliente" />
+							<f:selectItems var="clienteListagem"
+										   itemValue="#{clienteListagem}"
+										   itemLabel="#{cliente.cge.nome})" />
+						</p:selectOneMenu>
+					</p:column>	
+
+					<p:column style="margin-top:2px;">
+						<p:outputLabel for="idFieldValor" value="Valor: " />
+						<p:inputText id="idFieldValor" value="#{agendaBean.agenda.valor}" maxlength="7" size="10" 
+									 required="true" requiredMessage="O campo 'Valor' é obrigatório."
+									 converterMessage="Informe um valor válido para o campo 'Valor'."
+									 validatorMessage="Informe um valor entre 0.01 e 9999 no campo 'Valor'.">
+						
+							<f:convertNumber minFractionDigits="2" />
+							<f:validateDoubleRange minimum="0.01" maximum="9999"/>
+						</p:inputText>						
+					</p:column>					
+				</p:panelGrid>
 					
 				<p:panelGrid style="margin-top:5px; width:100%; height:100px; text-align:left;">
-					<p:commandButton value="Salvar" onclick="getDatasSelecionadas()" action="#{agendaBean.submit()}" />				
+					<p:commandButton value="Salvar" onclick="getDatasSelecionadas()" action="#{agendaBean.submit()}" actionListener="#{agendaBean.novo}"/>				
 				</p:panelGrid>
 
 			</p:panel>
 
 			<div class="dataTable">
-				<p:dataTable id="tabelaItensAgendamentos" var="cursorManutencoesRealizadas" lazy="true" 
+				<p:dataTable id="tabelaItensAgendamentos" var="cursorManutencoesRealizadas" lazy="true"
 							 dynamic="true" paginator="true" rows="5" paginatorPosition="bottom" value="#{agendaBean.agendasXDias}"
 							 style="margin-bottom:20px" selectionMode="single" resizableColumns="true" editable="true"
 							 emptyMessage="Nenhum registro encontrado.">
