@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	template="/templates/modelo.xhtml">
+
+	<ui:define name="uiConteudo">
+	
+	<h:form id="formListagem">
+		<p:panel header="Usuários - Listagem">
+			<p:dataTable id="tabelaListagem" emptyMessage="Nenhum registro encontrado." 
+						 paginator="true" 
+						 value="#{usuarioBean.usuarios}"
+						 var="cursorUsuario" 
+						 rows="5"
+						 paginatorPosition="top">
+				<f:facet name="header">
+					<p:commandButton value="Novo"  
+									 actionListener="#{usuarioBean.novo}" type="org.omnifaces" 
+									 oncomplete="PF('dialogo').show();"
+									 update=":mensagem :formCadastro:painelCadastro">
+					
+						<f:actionListener type="org.omnifaces.eventlistener.ResetInputAjaxActionListener"/>
+					</p:commandButton>
+				</f:facet>
+
+				<p:column headerText="Usuário" filterBy="#{cursorUsuario.nome}" sortBy="#{cursorUsuario.nome}" 
+						  style="width: 25%; text-align: center;">
+					<h:outputText value="#{cursorUsuario.nome}" />
+				</p:column>
+
+				<p:column headerText="Tipo" sortBy="#{cursorUsuario.tipoFormatado}" style="width: 12%;text-align: center;">
+					<h:outputText value="#{cursorUsuario.tipoFormatado}" />
+				</p:column>
+
+ 				 
+ 				<p:column headerText="Ativo" sortBy="#{cursorUsuario.ativoFormatado}" style="width: 12%; text-align: center;">
+ 					<h:outputText value="#{cursorUsuario.ativoFormatado}"  />
+ 				</p:column>
+				
+				<p:column headerText="Opções" style="width: 6%;text-align: center;">
+					<p:commandButton icon="ui-icon-pencil" actionListener="#{usuarioBean.editar}" 
+									 update=":mensagem :formCadastro:painelCadastro" oncomplete="PF('dialogo').show();">
+						
+						<f:attribute name="usuarioSelecionado" value="#{cursorUsuario}" />
+						<f:actionListener type="org.omnifaces.eventlistener.ResetInputAjaxActionListener"/>
+					</p:commandButton>
+				
+					<p:commandButton icon="ui-icon-trash" actionListener="#{usuarioBean.excluir}" 
+									 update=":mensagem :formListagem:tabelaListagem" >
+						
+						<p:confirm header="Confirmação" message="Deseja realmente excluir o registro?" icon="ui-icon-alert" />
+						<f:attribute name="usuarioSelecionado" value="#{cursorUsuario}" />
+					</p:commandButton>
+				</p:column>
+			</p:dataTable>
+			
+			<p:confirmDialog global="true" showEffect="explode" hideEffect="bounce" >
+				<p:commandButton value="Sim" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check"/>
+				<p:commandButton value="Não" type="button" styleClass="ui-confirmdialog-no"  icon="ui-icon-close"/>
+			</p:confirmDialog>			
+		</p:panel>
+	</h:form>
+
+	<p:dialog header="Usuários - Cadastro" widgetVar="dialogo" draggable="true" resizable="false" modal="true" closable="false">
+		<h:form id="formCadastro">
+			<h:panelGrid id="painelCadastro" columns="2">
+				<p:outputLabel for="idCGE" value="CGE: "/>
+				<p:selectOneMenu id="idCGE" filter ="true" value="#{usuarioBean.usuario.cge}" 
+								 converter="omnifaces.SelectItemsConverter" 
+								 required="true" requiredMessage="O campo CGE é obrigatório.">
+					
+					<f:selectItem noSelectionOption="true" itemLabel="Selecione um usuário" />
+					<f:selectItems value="#{usuarioBean.cges}" var="usuarioListagem" 
+								  itemValue="#{usuarioListagem}" itemLabel="#{usuarioListagem.codigo} (#{usuarioListagem.nome})"/>
+								  
+				</p:selectOneMenu>
+				
+				<p:outputLabel for="idUsuario" value="Usuário: "/>				
+				<p:inputText id="idUsuario" value="#{usuarioBean.usuario.nome}"
+					maxlength="30" size="15" >
+
+					<p:ajax event="blur" update="@this" />
+				</p:inputText>
+									
+				<p:outputLabel for="idSenha" value="Senha: "/>
+				<p:password id="idSenha" maxlength="8" size="10" value="#{usuarioBean.usuario.senha}"
+							required="true" requiredMessage="O campo Senha é obrigatório."
+							validatorMessage="Informe uma senha de 4 a 12 caracteres.">
+					
+					<f:validateLength minimum="4" maximum="12" />
+				</p:password >
+				
+				<p:outputLabel for="idTipo" value="Tipo: "/>
+				<p:selectOneRadio id="idTipo" value="#{usuarioBean.usuario.tipo}" 
+								  required="true" requiredMessage="O campo Tipo é obrigatório.">
+								  
+					<f:selectItem itemValue="A" itemLabel="Administrador"/>
+					<f:selectItem itemValue="G" itemLabel="Gerente"/>
+					<f:selectItem itemValue="S" itemLabel="Suporte"/>
+				</p:selectOneRadio>
+				
+				<p:outputLabel for="idAtivo" value="Ativo:" />
+				<p:selectBooleanCheckbox id="idAtivo" value="#{usuarioBean.usuario.ativo}"
+										 required="true" requiredMessage="O campo Ativo é obrigatório." />
+				
+			</h:panelGrid>
+			
+			<h:panelGrid columns="2">
+				<p:commandButton value="Salvar" 
+							     actionListener="#{usuarioBean.salvar}"
+							     update=":mensagem :formCadastro:painelCadastro :formListagem:tabelaListagem"/>
+				<p:commandButton value="Fechar" oncomplete="PF('dialogo').hide();" />
+			</h:panelGrid>
+		</h:form>
+	</p:dialog>
+
+
+	</ui:define>
+</ui:composition>

@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	template="/templates/modelo.xhtml">
+
+	<ui:define name="uiConteudo">
+		<h:form id="formListagem">
+			<p:panel header="Cliente - Listagem">
+				<p:dataTable id="tabelaListagem"
+							 emptyMessage="Nenhum registro encontrado." 
+							 value="#{clienteBean.clientes}" var="cursorCliente" 
+							 paginator="true" rows="5" paginatorPosition="bottom"
+							 style="margin-bottom:20px">
+
+					<f:facet name="header">
+						<p:commandButton value="Novo" oncomplete="PF('dialogo').show();"
+							actionListener="#{clienteBean.novo}"
+							update=":formCadastro:painelCadastro">
+
+							<f:actionListener
+								type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
+						</p:commandButton>
+					</f:facet>
+
+					<p:column headerText="Código" sortBy="cursorCliente.cge.codigo" style="width: 10%;"
+						filterBy="cursorCliente.cge.codigo" filterMatchMode="contains">
+						<h:outputText value="#{cursorCliente.cge.codigo}" />
+					</p:column>
+
+					<p:column headerText="Cliente (CGE)" sortBy="#{cursorCliente.cge.nome}"
+						style="width: 30%;" filterBy="#{cursorCliente.cge.nome}"
+						filterMatchMode="contains">
+						<h:outputText value="#{cursorCliente.cge.nome}" />
+					</p:column>
+
+					<p:column headerText="CPF" style="width: 12%;">
+						<p:inputMask value="#{cursorCliente.cpf}" mask="99.999.999-99"
+							disabled="true" />
+					</p:column>
+
+					<p:column headerText="Ativo" style="width: 10%;">
+						<h:outputText value="#{cursorCliente.ativo}" />
+					</p:column>
+
+					<p:column headerText="Opções" style="width: 6%;">
+						<p:commandButton icon="ui-icon-pencil"
+							actionListener="#{clienteBean.editar}"
+							update=":formCadastro:painelCadastro"
+							oncomplete="PF('dialogo').show();">
+
+							<f:attribute name="clienteSelecionado" value="#{cursorCliente}" />
+							<f:actionListener
+								type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
+						</p:commandButton>
+
+						<p:commandButton icon="ui-icon-trash"
+							actionListener="#{clienteBean.excluir}"
+							update=":mensagem :formListagem:tabelaListagem">
+							<p:confirm header="Confirmação"
+								message="Deseja realmente excluir o registro?"
+								icon="ui-icon-alert" />
+							<f:attribute name="clienteSelecionado" value="#{cursorCliente}" />
+						</p:commandButton>
+					</p:column>
+				</p:dataTable>
+
+				<p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+					<p:commandButton value="Sim" type="button"
+						styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+					<p:commandButton value="Não" type="button"
+						styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+				</p:confirmDialog>
+			</p:panel>
+		</h:form>
+
+		<p:dialog header="Cliente - Cadastro" widgetVar="dialogo"
+			draggable="true" resizable="false" modal="true" closable="false">
+			<h:form id="formCadastro">
+				<h:panelGrid id="painelCadastro" columns="2">
+
+					<p:outputLabel for="idCliente" value="Cliente (CGE): " />
+					<p:selectOneMenu id="idCliente" filter="true" size="50"
+									 value="#{clienteBean.cliente.cge}"
+									 converter="omnifaces.SelectItemsConverter" required="true"
+									 requiredMessage="O campo Cliente é obrigatório.">
+
+						<f:selectItem noSelectionOption="true" itemLabel="Selecione um cliente" />
+						<f:selectItems value="#{clienteBean.cges}" var="clienteListagem"
+							itemValue="#{clienteListagem}"
+							itemLabel="#{clienteListagem.codigo} (#{clienteListagem.nome})" />
+
+					</p:selectOneMenu>
+
+					<h:outputLabel value="CPF:" />
+					<p:inputMask id="inputM_CPF" size="15" mask="999.999.999-99"
+								 value="#{clienteBean.cliente.cpf}" />
+
+					<p:outputLabel for="idRG" value="RG: " />
+					<p:inputMask id="idRG" value="#{clienteBean.cliente.rg}"
+								 maxlength="12" size="15" mask="99.999.999-9" />
+
+					<p:outputLabel for="idAtivo" value="Ativo:" />
+					<p:selectBooleanCheckbox id="idAtivo" value="#{clienteBean.cliente.ativo}" 
+											 required="true" requiredMessage="O campo Ativo é obrigatório."/>
+
+				</h:panelGrid>
+
+				<h:panelGrid columns="2">
+					<p:commandButton value="Salvar"
+						actionListener="#{clienteBean.salvar}"
+						update=":mensagem :formCadastro:painelCadastro :formListagem:tabelaListagem" />
+
+					<p:commandButton value="Fechar" oncomplete="PF('dialogo').hide();" />
+				</h:panelGrid>
+			</h:form>
+		</p:dialog>
+
+	</ui:define>
+</ui:composition>

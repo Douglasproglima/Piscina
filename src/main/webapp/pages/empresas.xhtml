@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	template="/templates/modelo.xhtml">
+
+	<ui:define name="uiConteudo">
+		<h:form id="formListagem">
+			<p:panel header="Empresa - Listagem">
+				<p:dataTable id="tabelaListagem"
+					emptyMessage="Nenhum registro encontrado." paginator="true"
+					value="#{empresaBean.empresas}" var="cursorEmpresa" rows="5"
+					paginatorPosition="top">
+
+					<f:facet name="header">
+						<p:commandButton value="Novo" oncomplete="PF('dialogo').show();"
+							actionListener="#{empresaBean.novo}"
+							update=":formCadastro:painelCadastro">
+
+							<f:actionListener
+								type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
+						</p:commandButton>
+					</f:facet>
+
+					<p:column headerText="Código" style="width: 5%;" sortBy="#{cursorEmpresa.cge.codigo}" filterBy="#{cursorEmpresa.cge.codigo}"
+						filterMatchMode="contains">
+						<h:outputText value="#{cursorEmpresa.cge.codigo}" />
+					</p:column>
+
+					<p:column headerText="Empresa" sortBy="#{cursorEmpresa.cge.nome}"
+						style="width: 20%;" filterBy="#{cursorEmpresa.cge.nome}"
+						filterMatchMode="contains">
+						<h:outputText value="#{cursorEmpresa.cge.nome}" />
+					</p:column>
+
+					<p:column headerText="Contato" style="width: 10%;">
+						<h:outputText value="#{cursorEmpresa.contato}" />
+					</p:column>
+
+					<p:column headerText="Telefone" style="width: 10%;">
+						<h:outputText value="#{cursorEmpresa.cge.telefone}" />
+					</p:column>
+
+					<p:column headerText="Celular" style="width: 10%;">
+						<h:outputText value="#{cursorEmpresa.cge.celular}" />
+					</p:column>
+
+					<p:column headerText="Ativo" style="width: 5%;">
+						<h:outputText value="#{cursorEmpresa.ativo}" />
+					</p:column>
+
+					<p:column headerText="Opções" style="width: 6%;">
+						<p:commandButton icon="ui-icon-pencil" actionListener="#{empresaBean.editar}"
+										 update=":formCadastro:painelCadastro"
+ 										 oncomplete="PF('dialogo').show();">
+
+							<f:attribute name="empresaSelecionada" value="#{cursorEmpresa}" />
+							<f:actionListener type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
+						</p:commandButton>
+
+						<p:commandButton icon="ui-icon-trash" actionListener="#{empresaBean.excluir}"
+										 update=":mensagem :formListagem:tabelaListagem">
+							
+							<p:confirm header="Confirmação" message="Deseja realmente excluir o registro?"
+									   icon="ui-icon-alert" />
+							<f:attribute name="empresaSelecionada" value="#{cursorEmpresa}" />
+						</p:commandButton>
+					</p:column>
+				</p:dataTable>
+
+				<p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+					<p:commandButton value="Sim" type="button"
+						styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+					<p:commandButton value="Não" type="button"
+						styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+				</p:confirmDialog>
+			</p:panel>
+		</h:form>
+
+		<p:dialog header="Empresa - Cadastro" widgetVar="dialogo"
+			draggable="true" resizable="false" modal="true" closable="false">
+			<h:form id="formCadastro">
+				<h:panelGrid id="painelCadastro" columns="2">
+
+					<p:outputLabel for="idEmpresa" value="Empresa (CGE): " />
+					<p:selectOneMenu id="idEmpresa" filter="true"
+									value="#{empresaBean.empresa.cge}"
+									converter="omnifaces.SelectItemsConverter" required="true"
+									requiredMessage="O campo Empresa é obrigatório.">
+
+						<f:selectItem noSelectionOption="true"
+							itemLabel="Selecione uma empresa" />
+						<f:selectItems value="#{empresaBean.cges}" var="empresaListagem"
+							itemValue="#{empresaListagem}"
+							itemLabel="#{empresaListagem.codigo} - #{empresaListagem.nome}" />
+
+					</p:selectOneMenu>
+
+					<p:outputLabel for="idNomeFant" value="Nome Fantasia: " />
+					<p:inputText id="idNomeFant" value="#{empresaBean.empresa.nomeFantasia}" maxlength="100"
+						size="45" converter="upperCaseConverter">
+
+						<p:ajax event="blur" update="@this" />
+					</p:inputText>
+
+					<p:outputLabel for="idContato" value="Contato:" />
+					<p:inputText id="idContato" value="#{empresaBean.empresa.contato}"
+						maxlength="30" size="15" converter="upperCaseConverter">
+
+						<p:ajax event="blur" update="@this" />
+					</p:inputText>
+
+					<p:outputLabel for="idCNPJ" value="CNPJ: " />
+					<p:inputMask id="idCNPJ" mask="99.999.999/9999-99" value="#{empresaBean.empresa.cnpj}" size="15" />
+
+					<p:outputLabel for="idInsEst" value="Insc. Estadual: " />
+					<p:inputMask id="idInsEst" mask="999.999.999/9999" value="#{empresaBean.empresa.inscEstadual}" size="15" />
+
+					<p:outputLabel for="idAtivo" value="Ativo:" />
+					<p:selectBooleanCheckbox id="idAtivo" value="#{empresaBean.empresa.ativo}"
+											 required="true" requiredMessage="O campo Ativo é obrigatório."/>
+
+					<p:outputLabel for="idUpload" value="Upload:" />
+					<p:fileUpload id="idUpload" mode="advanced"
+								  fileUploadListener="#{empresaBean.upload}" auto="true"
+								  update=":mensagem :formCadastro:idLogoTipo" required="true" requiredMessage="É obrigatório a foto da empresa."/>
+
+					<p:outputLabel for="idLogoTipo" value="Foto:" />
+					<p:graphicImage id="idLogoTipo" value="#{imagemBean.foto}"
+						width="200" height="200">
+						<f:param name="caminho" value="#{produtoBean.produto.caminho}" />
+					</p:graphicImage>
+
+				</h:panelGrid>
+
+				<h:panelGrid columns="2">
+					<p:commandButton value="Salvar"
+						actionListener="#{empresaBean.salvar}"
+						update=":mensagem :formCadastro:painelCadastro :formListagem:tabelaListagem" />
+
+					<p:commandButton value="Fechar" oncomplete="PF('dialogo').hide();" />
+				</h:panelGrid>
+			</h:form>
+		</p:dialog>
+
+	</ui:define>
+</ui:composition>
